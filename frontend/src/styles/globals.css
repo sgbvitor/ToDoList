@@ -1,0 +1,11 @@
+/* globals.css */
+
+:root {
+  --placeholder-color: white;
+}
+
+.form-control::placeholder,
+.form-control:-ms-input-placeholder,
+.form-control::-ms-input-placeholder {
+  color: var(--placeholder-color);
+}
