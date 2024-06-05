@@ -1,9 +1,7 @@
 import type { AppProps } from "next/app";
+import "@/styles/globals.css"; // Import the globals.css file
 
-import React from "react";
-import "../styles/globals.css"; // Import the globals.css file
-
-// Your application code...
+// Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 

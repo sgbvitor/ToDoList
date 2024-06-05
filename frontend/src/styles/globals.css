@@ -1,11 +1,4 @@
 /* globals.css */
-
-:root {
-  --placeholder-color: white;
-}
-
-.form-control::placeholder,
-.form-control:-ms-input-placeholder,
-.form-control::-ms-input-placeholder {
-  color: var(--placeholder-color);
+body {
+  background-color: #282c34 !important;
 }

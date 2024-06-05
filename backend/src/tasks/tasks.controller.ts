@@ -58,7 +58,7 @@ export class TasksController {
     @Body() data: Prisma.TaskUpdateInput,
   ): Promise<Task> {
     try {
-      return this.tasksService.updateTask({ where: { id }, data });
+      return await this.tasksService.updateTask({ where: { id }, data });
     } catch (e) {
       throw new HttpException(
         {

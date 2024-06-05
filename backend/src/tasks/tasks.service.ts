@@ -44,7 +44,7 @@ export class TasksService {
     data: Prisma.TaskUpdateInput;
   }): Promise<Task> {
     const { where, data } = params;
-    return this.prisma.task.update({
+    return await this.prisma.task.update({
       data,
       where,
     });

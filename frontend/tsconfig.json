@@ -20,7 +20,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/utils/formatDate.ts"
+    "src/utils/formatDate.ts",
+    "src/pages/_layout.tsx"
   ],
   "exclude": ["node_modules"]
 }
