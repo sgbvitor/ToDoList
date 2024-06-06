@@ -1,13 +1,12 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import formatDate from "@/utils/formatDate";
 
 export default function Home() {
   const [tasks, setTasks] = useState<
     Array<{ id: number; title: string; status: string; created_at: string }>
   >([]);
-  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [updatedTask, setUpdatedTask] = useState<
     Array<{ id: number; title: string; status: string }>
   >([]);
@@ -46,15 +45,10 @@ export default function Home() {
     }
   }
   function handleInputChange(
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>
   ) {
     setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
   }
-  const handleInputChangeSelect: ChangeEventHandler<HTMLSelectElement> = (
-    e
-  ) => {
-    setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
-  };
 
   function handleUpdateTask(id: number) {
     if (updatedTask) {
@@ -68,41 +62,16 @@ export default function Home() {
         });
     }
   }
+  console.log(updatedTask);
   return (
     <main className="container p-5">
-      <style jsx>{`
-        .form-control {
-          color: white;
-        }
-        .form-control::placeholder {
-          color: white;
-        }
-        .form-control:focus {
-          color: white;
-          border-color: transparent;
-          box-shadow: none;
-          caret-color: white;
-        }
-        .form-select {
-          color: white;
-        }
-        .form-select:focus {
-          color: white;
-          border-color: transparent;
-          box-shadow: none;
-          caret-color: white;
-        }
-        .form-select option {
-          background-color: #212529;
-        }
-      `}</style>
-      <table className="table table-dark table-hover mx-auto ">
+      <table className="table table-bordered table-dark table-hover mx-auto align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Status</th>
-            <th colSpan={2} scope="col">
+            <th scope="col" colSpan={2}>
               Created_at
             </th>
           </tr>
@@ -111,28 +80,29 @@ export default function Home() {
           {tasks.map((task) => (
             <tr key={task.id}>
               <th scope="row">{task.id}</th>
-              <td>
-                <input
+              <td className="d-flex flex-direction-row flex-wrap">
+                <textarea
                   placeholder={task.title}
-                  type="text"
-                  className="form-control bg-transparent border-0 outline-0 t"
-                  disabled={editingTaskId !== task.id}
-                  onClick={() => setEditingTaskId(task.id)}
+                  className="form-control bg-transparent border-0 outline-0 p-0 flex-grow-1"
                   onBlur={() => handleUpdateTask(task.id)}
                   name="title"
                   onChange={handleInputChange}
-                />
+                  minLength={1}
+                ></textarea>
               </td>
               <td>
                 <select
                   className="form-select bg-transparent border-0 outline-0 text-start p-0"
                   aria-label="Default select example"
                   name="status"
-                  onChange={handleInputChangeSelect}
-                  onSelect={() => handleUpdateTask(task.id)}
+                  onChange={handleInputChange}
+                  onBlur={() => {
+                    const select = document.querySelector("form-select");
+                    console.log(select);
+                  }}
                 >
-                  <option value="Pendente">Pendente</option>
-                  <option value="Concluido">Concluido</option>
+                  <option>Pendente</option>
+                  <option>Concluido</option>
                 </select>
               </td>
               <td>{formatDate(task.created_at)}</td>
@@ -140,12 +110,6 @@ export default function Home() {
                 <div className="text-center d-flex gap-2 flex-wrap align-items-center justify-content-center">
                   <button className="btn btn-success mx-1">
                     <i className="bi bi-plus-square"></i>
-                  </button>
-                  <button
-                    onClick={() => setEditingTaskId(task.id)} // Definir editTaskId quando o botão de edição for clicado
-                    className="btn btn-warning mx-1"
-                  >
-                    <i className="bi bi-pencil-square"></i>
                   </button>
                   <button
                     onClick={() => clickDelete(task.id)}
