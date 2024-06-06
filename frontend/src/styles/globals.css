@@ -2,3 +2,27 @@
 body {
   background-color: #282c34 !important;
 }
+.form-control {
+  color: white !important;
+}
+.form-control::placeholder {
+  color: white !important;
+}
+.form-control:focus {
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  caret-color: white !important;
+}
+.form-select {
+  color: white !important;
+}
+.form-select:focus {
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  caret-color: white !important;
+}
+.form-select option {
+  background-color: #212529 !important;
+}
