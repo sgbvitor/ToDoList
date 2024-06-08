@@ -5,7 +5,10 @@ import formatDate from "@/utils/formatDate";
 import { Modal, Button, Form } from "react-bootstrap";
 
 export default function Home() {
-  const [newTask, setNewTask] = useState<{ title: string }>({ title: "" });
+  const [newTask, setNewTask] = useState<{ title: string; status: string }>({
+    title: "",
+    status: "pendente",
+  });
   const [tasks, setTasks] = useState<
     Array<{ id: number; title: string; status: string; created_at: string }>
   >([]);
@@ -21,9 +24,9 @@ export default function Home() {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
   }
 
-  function handleCreateNewTask() {
-    axios
-      .post("http://localhost:3020/tasks", { title: newTask.title })
+  async function handleCreateNewTask() {
+    await axios
+      .post("http://localhost:3020/tasks", newTask)
       .then(() => {
         router.reload();
       })
@@ -69,7 +72,6 @@ export default function Home() {
   ) {
     setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
   }
-
   function handleUpdateTask(id: number) {
     if (updatedTask) {
       axios
@@ -82,6 +84,7 @@ export default function Home() {
         });
     }
   }
+  console.log(updatedTask);
   return (
     <main className="container p-5">
       <table className="table table-bordered table-dark table-hover mx-auto align-middle">
@@ -118,13 +121,9 @@ export default function Home() {
                   aria-label="Default select example"
                   name="status"
                   onChange={handleInputChange}
-                  onBlur={() => {
-                    const select = document.querySelector("form-select");
-                    console.log(select);
-                  }}
                 >
-                  <option>Pendente</option>
-                  <option>Concluido</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="concluido">Concluido</option>
                 </select>
               </td>
               <td>{formatDate(task.created_at)}</td>
@@ -170,7 +169,7 @@ export default function Home() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={() => handleCreateNewTask}>
+          <Button variant="primary" onClick={handleCreateNewTask}>
             Save
           </Button>
         </Modal.Footer>
