@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import formatDate from "@/utils/formatDate";
 import { Modal, Button, Form } from "react-bootstrap";
+import setRange from "@/utils/setRange";
 
 export default function Home() {
   const [newTask, setNewTask] = useState<{ title: string; status: string }>({
@@ -55,7 +56,7 @@ export default function Home() {
       window.confirm("Você tem certeza que deseja excluir a task " + id + "?")
     ) {
       axios
-        .delete("http://localhost:3020/tasks/" + id)
+        .delete(`http://localhost:3020/tasks/${id}`)
         .then((response) => {
           if (response.status === 204) {
             getTasks();
@@ -67,8 +68,9 @@ export default function Home() {
         });
     }
   }
+
   function handleInputChange(
-    e: ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
   }
@@ -84,7 +86,6 @@ export default function Home() {
         });
     }
   }
-  console.log(updatedTask);
   return (
     <main className="container p-5">
       <table className="table table-bordered table-dark table-hover mx-auto align-middle">
@@ -106,14 +107,15 @@ export default function Home() {
             <tr key={task.id}>
               <th scope="row">{task.id}</th>
               <td className="d-flex flex-direction-row flex-wrap">
-                <textarea
-                  placeholder={task.title}
+                <input
                   className="form-control bg-transparent border-0 outline-0 p-0 flex-grow-1 overflow-auto"
                   onBlur={() => handleUpdateTask(task.id)}
                   name="title"
                   onChange={handleInputChange}
                   minLength={1}
-                ></textarea>
+                  placeholder={task.title}
+                  onClick={() => setRange}
+                />
               </td>
               <td>
                 <select
@@ -121,9 +123,11 @@ export default function Home() {
                   aria-label="Default select example"
                   name="status"
                   onChange={handleInputChange}
+                  defaultValue={task.status}
+                  onClick={() => handleUpdateTask(task.id)}
                 >
-                  <option value="pendente">Pendente</option>
-                  <option value="concluido">Concluido</option>
+                  <option>Pendente</option>
+                  <option>Concluido</option>
                 </select>
               </td>
               <td>{formatDate(task.created_at)}</td>
