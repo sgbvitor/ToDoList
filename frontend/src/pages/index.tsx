@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import formatDate from "@/utils/formatDate";
 import { Modal, Button, Form } from "react-bootstrap";
-import setRange from "@/utils/setRange";
 
 export default function Home() {
   const [newTask, setNewTask] = useState<{ title: string; status: string }>({
@@ -69,10 +68,18 @@ export default function Home() {
     }
   }
 
-  function handleInputChange(
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
-    setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
+  function handleInputChange(e: ChangeEvent<HTMLParagraphElement>) {
+    setUpdatedTask({
+      ...updatedTask,
+      [e.target.title]: e.target.textContent,
+    });
+  }
+
+  function handleInputChangeSelect(e: ChangeEvent<HTMLSelectElement>) {
+    setUpdatedTask({
+      ...updatedTask,
+      [e.target.name]: e.target.value,
+    });
   }
   function handleUpdateTask(id: number) {
     if (updatedTask) {
@@ -87,17 +94,24 @@ export default function Home() {
     }
   }
   return (
-    <main className="container p-5">
+    <main className="p-5">
       <table className="table table-bordered table-dark table-hover mx-auto align-middle">
-        <thead>
+        <thead className="align-middle">
           <tr>
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Status</th>
             <th scope="col">Created_at</th>
-            <th className="text-center" scope="col">
-              <Button className="btn btn-success mx-1" onClick={handleShow}>
-                <i className="bi bi-plus-square"></i>
+            <th
+              className="text-center d-flex align-items-center justify-content-center"
+              scope="col"
+            >
+              <Button
+                className="btn bg-transparent border-0 outline-0 shadow-none d-flex flex-column align-items-center justify-content-center"
+                onClick={handleShow}
+              >
+                <i className="bi bi-plus-circle-fill text-success fs-3"></i>
+                <span className="text-success">New</span>
               </Button>
             </th>
           </tr>
@@ -106,23 +120,23 @@ export default function Home() {
           {tasks.map((task) => (
             <tr key={task.id}>
               <th scope="row">{task.id}</th>
-              <td className="d-flex flex-direction-row flex-wrap">
-                <input
-                  className="form-control bg-transparent border-0 outline-0 p-0 flex-grow-1 overflow-auto"
+              <td>
+                <p
+                  title="title"
+                  contentEditable
+                  onChange={() => handleInputChange}
                   onBlur={() => handleUpdateTask(task.id)}
-                  name="title"
-                  onChange={handleInputChange}
-                  minLength={1}
-                  placeholder={task.title}
-                  onClick={() => setRange}
-                />
+                  className="text-white bg-transparent border-0 outline-0 p-0 flex-grow-1 overflow-auto"
+                >
+                  {task.title}
+                </p>
               </td>
               <td>
                 <select
-                  className="form-select bg-transparent border-0 outline-0 text-start p-0"
+                  className="form-select bg-transparent border-0 outline-0 p-0 flex-grow-1 overflow-auto"
                   aria-label="Default select example"
                   name="status"
-                  onChange={handleInputChange}
+                  onChange={handleInputChangeSelect}
                   defaultValue={task.status}
                   onClick={() => handleUpdateTask(task.id)}
                 >
@@ -135,9 +149,9 @@ export default function Home() {
                 <div className="text-center d-flex gap-2 flex-wrap align-items-center justify-content-center">
                   <button
                     onClick={() => clickDelete(task.id)}
-                    className="btn btn-danger mx-1"
+                    className="btn text-danger bg-transparent border-0 outline-0 shadow-none mx-1"
                   >
-                    <i className="bi bi-trash"></i>
+                    <i className="bi bi-trash3 fs-3" />
                   </button>
                 </div>
               </td>
@@ -146,30 +160,24 @@ export default function Home() {
         </tbody>
       </table>
       <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header
-          closeButton
-          className="bg-dark text-white border-bottom-0"
-        >
+        <Modal.Header closeButton className="bg-dark text-light border-0">
           <Modal.Title>New Task</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-dark text-white">
-          <Form className="bg-dark text-white">
-            <Form.Group
-              className="mb-3 bg-dark text-white"
-              controlId="exampleForm.ControlTextarea1"
-            >
+        <Modal.Body className="bg-dark text-light">
+          <Form>
+            <Form.Group controlId="exampleForm.ControlTextarea1">
               <Form.Label>Title</Form.Label>
               <Form.Control
+                className="bg-black text-light"
                 name="title"
-                className="mb-3 bg-secondary text-white"
                 as="textarea"
-                rows={3}
+                rows={1}
                 onChange={handleInputChangeCreate}
               />
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="bg-dark text-white border-top-0">
+        <Modal.Footer className="bg-dark border-0">
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
